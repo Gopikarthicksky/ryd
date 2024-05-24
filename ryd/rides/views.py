@@ -72,3 +72,35 @@ class AvailableRidesView(View):
 
         ride_list = serializers.serialize('json', rides)
         return JsonResponse(ride_list, safe=False)
+
+
+class FromLocationAutocompleteView(View):
+    def get(self, request):
+        query = request.GET.get('query')
+        if not query:
+            return JsonResponse({'error': 'Missing required parameter.'}, status=400)
+
+        response = requests.get('https://api.locationiq.com/v1/autocomplete', params={
+            'key': 'your-opencage-api-key',
+            'q': query,
+            'limit':'5',
+            'dedupe':'1',
+        })
+
+        return JsonResponse(response.json(), safe=False)
+
+
+class ToLocationAutocompleteView(View):
+    def get(self, request):
+        query = request.GET.get('query')
+        if not query:
+            return JsonResponse({'error': 'Missing required parameter.'}, status=400)
+
+        response = requests.get('https://api.locationiq.com/v1/autocomplete', params={
+            'key': 'your-opencage-api-key',
+            'q': query,
+            'limit':'5',
+            'dedupe':'1',
+        })
+
+        return JsonResponse(response.json(), safe=False)
