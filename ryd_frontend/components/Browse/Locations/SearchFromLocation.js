@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import {
   View,
   TextInput,
-  Button,
   FlatList,
   Text,
   StyleSheet,
@@ -13,28 +12,21 @@ import axios from "axios";
 import { debounce } from "lodash";
 
 const SearchFromLocation = ({ navigation }) => {
-  const [term, setTerm] = useState("");
-  const [results, setResults] = useState([]);
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
 
-  const fetchData = debounce((term) => {
+  const fetchData = debounce(() => {
     axios
-      .get(`https://api.example.com/search?q=${term}`)
+      .get(`http://10.126.55.177:8000/location_autocomplete/?q=${searchTerm}`)
       .then((response) => {
         setData(response.data);
+        console.log(data);
       })
       .catch((error) => {
         console.error("Error fetching data: ", error);
+        console.error("Error details: ", error.response);
       });
   }, 300);
-
-  const handleSearch = () => {
-    const rides = ["Adyar", "Anna Nagar", "Koyambedu", "Tambaram", "Porur"];
-    const filteredRides = rides.filter((ride) => ride.includes(term));
-
-    setResults(filteredRides);
-  };
 
   return (
     <View style={styles.container}>
@@ -48,29 +40,28 @@ const SearchFromLocation = ({ navigation }) => {
       <View style={styles.searchBar}>
         <TextInput
           style={styles.searchInput}
-          value={term}
+          value={searchTerm}
           onChangeText={(text) => {
-            setTerm(term);
             setSearchTerm(text);
-            fetchData(searchTerm);
+            fetchData(text);
           }}
           placeholder="Select the boarding point"
         />
-        <Pressable onPress={handleSearch} style={{ top: 7 }}>
+        <Pressable  style={{ top: 7 }}>
           <Ionicons name="search" size={25} color="grey" />
         </Pressable>
       </View>
       <View style={styles.listResults}>
         <FlatList
-          data={results}
-          keyExtractor={(item) => item}
+          data={data}
+          keyExtractor={(item,index) => item.toString()}
           renderItem={({ item }) => (
             <Pressable
               onPress={() => {
                 console.log(item);
                 navigation.navigate("Home");
               }}>
-              <Text style={{ marginBottom: 15, fontSize: 16 }}>{item}</Text>
+              <Text style={{ marginBottom: 15, fontSize: 16 }}>{item.display_place}</Text>
               <View
                 style={{
                   flex: 1,
