@@ -74,7 +74,7 @@ class AvailableRidesView(APIView):
 
 class LocationAutocompleteView(APIView):
     def get(self, request):
-        query = request.data.get('query')
+        query = request.GET.get('q')
         if not query:
             return JsonResponse({'error': 'Missing required parameter.'}, status=400)
 
