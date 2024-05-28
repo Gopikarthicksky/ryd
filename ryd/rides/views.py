@@ -1,4 +1,5 @@
 # views.py
+import requests
 from django.http import JsonResponse
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -73,18 +74,34 @@ class AvailableRidesView(APIView):
 
 class LocationAutocompleteView(APIView):
     def get(self, request):
-        query = request.GET.get('query')
+        query = request.data.get('query')
         if not query:
             return JsonResponse({'error': 'Missing required parameter.'}, status=400)
 
         response = requests.get('https://api.locationiq.com/v1/autocomplete', params={
-            'key': 'your-opencage-api-key',
+            'key': 'pk.a81422c5e313a53d03e8254b6e5da929',
             'q': query,
             'limit':'5',
             'dedupe':'1',
         })
+        data = response.json()
+        location = []
+        for entry in data:
+            # Extract the required fields
+            display_place = entry.get('display_place')
+            display_address = entry.get('display_address')
+            lat = entry.get('lat')
+            lon = entry.get('lon')
 
-        return JsonResponse(response.json(), safe=False)
+            # Add the extracted data to the list
+            location.append({
+                'display_place': display_place,
+                'display_address': display_address,
+                'lat': lat,
+                'lon': lon,
+            })
+        print(location)
+        return JsonResponse(location, safe=False)
 
 
 class RegisterVehicleView(APIView):
