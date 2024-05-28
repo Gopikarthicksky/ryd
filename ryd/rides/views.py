@@ -8,6 +8,9 @@ from django.core import serializers
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from datetime import datetime
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
 
 @method_decorator(csrf_exempt, name='dispatch')
 class RideListView(View):
@@ -27,6 +30,7 @@ class RideListView(View):
             available_seats=request.POST['available_seats'],
         )
         return JsonResponse({'ride_id': new_ride.id}, status=201)
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class RideDetailView(View):
@@ -51,46 +55,21 @@ class RideDetailView(View):
             return JsonResponse({'error': 'Invalid action.'}, status=400)
 
 
-class AvailableRidesView(View):
-    def get(self, request):
-        source = request.GET.get('source')
-        destination = request.GET.get('destination')
-        passengers = request.GET.get('passengers')
-        date = request.GET.get('date')
+class AvailableRidesView(APIView):
+    def post(self, request, format=None):
+        data = request.data
+        origin = data.get('origin')
+        destination = data.get('destination')
+        passengers = data.get('passengers')
+        origin_latitude = data.get('origin_latitude')
+        origin_longitude = data.get('origin_longitude')
+        destination_latitude = data.get('destination_latitude')
+        destination_longitude = data.get('destination_longitude')
+        vehicle_type = data.get('vehicle_type')
+    
+        return None
 
-        if not all([source, destination, passengers, date]):
-            return JsonResponse({'error': 'Missing required parameters.'}, status=400)
-
-        date = datetime.strptime(date, '%Y-%m-%d')
-
-        rides = Ride.objects.filter(
-            Q(origin=source) &
-            Q(destination=destination) &
-            Q(available_seats__gte=passengers) &
-            Q(departure_time__date=date)
-        )
-
-        ride_list = serializers.serialize('json', rides)
-        return JsonResponse(ride_list, safe=False)
-
-
-class FromLocationAutocompleteView(View):
-    def get(self, request):
-        query = request.GET.get('query')
-        if not query:
-            return JsonResponse({'error': 'Missing required parameter.'}, status=400)
-
-        response = requests.get('https://api.locationiq.com/v1/autocomplete', params={
-            'key': 'your-opencage-api-key',
-            'q': query,
-            'limit':'5',
-            'dedupe':'1',
-        })
-
-        return JsonResponse(response.json(), safe=False)
-
-
-class ToLocationAutocompleteView(View):
+class LocationAutocompleteView(View):
     def get(self, request):
         query = request.GET.get('query')
         if not query:
