@@ -1,5 +1,8 @@
 import React from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, ImageBackground } from "react-native";
+import WeatherDisplay from "./Header/WeatherDisplay";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import MainLogic from "./Main/MainLogic";
 
 const HomePage = ({ navigation }) => {
   return (
@@ -9,10 +12,26 @@ const HomePage = ({ navigation }) => {
         style={HomePageStyles.homeBg}
         contentFit="contain"
       />
-      <Text style={HomePageStyles.title}>Welcome to CarPool App</Text>
-      <Text style={HomePageStyles.description}>
-        Share rides with people traveling in the same direction.
-      </Text>
+      <View style={HomePageStyles.header}>
+        <View style={HomePageStyles.headerNavBar}>
+          <WeatherDisplay style={HomePageStyles.weatherDisplay} />
+          <Ionicons
+            name="person-circle-outline"
+            size={40}
+            color="white"
+            style={HomePageStyles.profileIcon}
+            onPress={() => {
+              navigation.navigate("Profile");
+            }}
+          />
+          <Ionicons name="notifications-outline" size={40} color="white" />
+        </View>
+        <View style={HomePageStyles.description}>
+          <Text style={HomePageStyles.title}>Ryd.</Text>
+          <Text style={HomePageStyles.subtitle}>to ?</Text>
+        </View>
+      </View>
+      <MainLogic />
     </View>
   );
 };
@@ -20,18 +39,39 @@ const HomePage = ({ navigation }) => {
 const HomePageStyles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "flex-start",
     padding: 16,
+    backgroundColor: "white",
+    position: "fixed",
+  },
+  header: {
+    flexDirection: "column",
+    width: "100%",
+    left: "15%",
+  },
+  headerNavBar: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+    top: "25%",
+  },
+  profileIcon: {
+    left: "110%",
   },
   title: {
-    fontSize: 24,
+    fontSize: 48,
     fontWeight: "bold",
-    marginBottom: 16,
+    top: "85%",
+  },
+  subtitle: {
+    fontSize: 48,
+    fontWeight: "bold",
+    top: "85%",
   },
   homeBg: {
     position: "absolute",
-    height: "45%",
+    height: "49%",
     width: "125%",
     left: "-1%",
     top: "4.5%",

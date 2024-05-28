@@ -42,7 +42,11 @@ const LoginPage = ({ navigation }) => {
       </Pressable>
       <Text style={{ paddingTop: 10 }}>or</Text>
       <Pressable>
-        <Text style={{ paddingTop: 10, fontWeight: "bold" }}>Sign Up</Text>
+        <Text
+          style={{ paddingTop: 10, fontWeight: "bold" }}
+          onPress={() => navigation.navigate("SignUp")}>
+          Sign Up
+        </Text>
       </Pressable>
     </View>
   );
@@ -55,6 +59,7 @@ const LoginPageStyles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
+    backgroundColor: "white",
   },
   title: {
     fontSize: 48,
@@ -70,6 +75,7 @@ const LoginPageStyles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 10,
     width: "87%",
+    fontWeight: "600",
   },
   button: {
     backgroundColor: "black",

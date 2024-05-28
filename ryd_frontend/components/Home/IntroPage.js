@@ -75,6 +75,7 @@ const IntroPageStyles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "white",
   },
   title: {
     position: "absolute",
@@ -216,6 +217,7 @@ const IntroPageStyles = StyleSheet.create({
   loginText: {
     color: "black",
     textAlign: "center",
+    fontWeight: "bold",
     bottom: "5%",
     right: "2%",
   },

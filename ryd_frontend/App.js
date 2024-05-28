@@ -5,6 +5,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import LoginPage from "./components/Login/LoginPage";
 import IntroPage from "./components/Home/IntroPage";
 import HomePage from "./components/Home/HomePage";
+import SignUpPage from "./components/SignUp/SignUpPage";
+import ProfileInfoPage from "./components/Profile/ProfileInfoPage";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -27,6 +29,11 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
+          name="SignUp"
+          component={SignUpPage}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="Intro"
           component={IntroPage}
           options={{ headerShown: false }}
@@ -34,6 +41,11 @@ export default function App() {
         <Stack.Screen
           name="Home"
           component={HomePage}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Profile"
+          component={ProfileInfoPage}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
