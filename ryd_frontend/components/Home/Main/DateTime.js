@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import { Button, TextInput, View, StyleSheet } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { format } from "date-fns";
 
 const DateTime = () => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
   const [date, setDate] = useState(new Date());
   const [time, setTime] = useState(new Date());
+  const [timeStamp, setTimeStamp] = useState(new Date());
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -18,7 +20,16 @@ const DateTime = () => {
   };
 
   const handleConfirmDate = (date) => {
-    setDate(date.toLocaleDateString());
+    const formattedTimeStamp = format(date, "dd-MM-yyyy'T'HH:mm:ss.SSS'Z'");
+    setTimeStamp(formattedTimeStamp);
+    console.log(timeStamp);
+    setDate(
+      date.toLocaleDateString("en-GB", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    );
     hideDatePicker();
   };
 
@@ -31,7 +42,13 @@ const DateTime = () => {
   };
 
   const handleConfirmTime = (time) => {
-    setTime(time.toLocaleTimeString());
+    setTime(
+      time.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true,
+      })
+    );
     hideTimePicker();
   };
 

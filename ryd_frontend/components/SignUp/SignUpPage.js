@@ -9,12 +9,14 @@ import {
   Alert,
 } from "react-native";
 import CheckBox from "expo-checkbox";
+import DropDownPicker from "react-native-dropdown-picker";
 
 const SignUpPage = ({ navigation }) => {
   const [emailId, setEmailId] = useState("");
   const [empId, setEmpId] = useState("");
   const [mobNum, setMobNum] = useState("");
   const [password, setPassword] = useState("");
+  const [gender, setGender] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isSelected, setSelection] = useState(false);
 
@@ -71,6 +73,40 @@ const SignUpPage = ({ navigation }) => {
         onChangeText={setMobNum}
         keyboardType="phone-pad"
         maxLength={10}
+      />
+      <DropDownPicker
+        items={[
+          { label: "Male", value: "M" },
+          { label: "Female", value: "F" },
+          { label: "Others", value: "O" },
+        ]}
+        defaultValue={gender}
+        placeholder="Gender"
+        placeholderStyle={{ color: "grey" }}
+        containerStyle={{
+          height: 40,
+          width: "87%",
+          marginBottom: 20,
+        }}
+        itemSeparator={true}
+        separatorStyle={{ height: 1, backgroundColor: "black" }}
+        style={{
+          backgroundColor: "white",
+          borderColor: "black",
+          borderRadius: 10,
+        }}
+        itemStyle={{
+          justifyContent: "flex-start",
+        }}
+        labelStyle={{
+          color: "black",
+        }}
+        dropDownStyle={{
+          backgroundColor: "#fafafa",
+          borderColor: "black",
+          borderRadius: 10,
+        }}
+        onChangeItem={(item) => setGender(item.value)}
       />
       <TextInput
         style={SignUpPageStyles.input}

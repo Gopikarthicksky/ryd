@@ -41,12 +41,8 @@ const LoginPage = ({ navigation }) => {
         <Text style={LoginPageStyles.loginText}>Login</Text>
       </Pressable>
       <Text style={{ paddingTop: 10 }}>or</Text>
-      <Pressable>
-        <Text
-          style={{ paddingTop: 10, fontWeight: "bold" }}
-          onPress={() => navigation.navigate("SignUp")}>
-          Sign Up
-        </Text>
+      <Pressable onPress={() => navigation.navigate("SignUp")}>
+        <Text style={{ paddingTop: 10, fontWeight: "bold" }}>Sign Up</Text>
       </Pressable>
     </View>
   );

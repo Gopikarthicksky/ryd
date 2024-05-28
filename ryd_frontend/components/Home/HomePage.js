@@ -1,8 +1,9 @@
 import React from "react";
-import { View, Text, StyleSheet, Image, ImageBackground } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 import WeatherDisplay from "./Header/WeatherDisplay";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MainLogic from "./Main/MainLogic";
+import BottomNavBar from "./BottomNavBar/BottomNavBar";
 
 const HomePage = ({ navigation }) => {
   return (
@@ -32,6 +33,7 @@ const HomePage = ({ navigation }) => {
         </View>
       </View>
       <MainLogic />
+      <BottomNavBar />
     </View>
   );
 };

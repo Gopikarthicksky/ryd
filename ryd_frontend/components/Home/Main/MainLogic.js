@@ -9,16 +9,19 @@ import {
 import React, { useState } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import DateTime from "./DateTime";
+import { useNavigation } from "@react-navigation/native";
 
 const MainLogic = () => {
   const [fromLocation, setFromLocation] = useState("");
-  const [toLocation, setToLocation] = useState("");
+  const [toLocation, setToLocation] = useState("CIEC");
 
   const swapLocations = () => {
     const temp = fromLocation;
     setFromLocation(toLocation);
     setToLocation(temp);
   };
+
+  const navigation = useNavigation();
 
   return (
     <View style={MainLogicStyles.container}>
@@ -29,6 +32,7 @@ const MainLogic = () => {
             value={fromLocation}
             onChangeText={setFromLocation}
             placeholder="From Location"
+            onPress={() => navigation.navigate("FromLocation")}
           />
         </View>
         <View style={MainLogicStyles.toLocation}>
@@ -58,6 +62,9 @@ const MainLogic = () => {
         <DateTime />
       </View>
       <Pressable
+        onPress={() => {
+          navigation.navigate("Search");
+        }}
         style={{
           backgroundColor: "black",
           width: 200,

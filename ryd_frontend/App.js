@@ -7,6 +7,7 @@ import IntroPage from "./components/Home/IntroPage";
 import HomePage from "./components/Home/HomePage";
 import SignUpPage from "./components/SignUp/SignUpPage";
 import ProfileInfoPage from "./components/Profile/ProfileInfoPage";
+import SearchFromLocation from "./components/Browse/Locations/SearchFromLocation";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -43,9 +44,14 @@ export default function App() {
           component={HomePage}
           options={{ headerShown: false }}
         />
-        <Stack.Screen
+        {/*         <Stack.Screen
           name="Profile"
           component={ProfileInfoPage}
+          options={{ headerShown: false }}
+        /> */}
+        <Stack.Screen
+          name="FromLocation"
+          component={SearchFromLocation}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
