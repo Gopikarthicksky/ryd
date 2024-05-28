@@ -12,15 +12,25 @@ class Employee(models.Model):
     email_id = models.EmailField(unique=True)
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
     mobile_number = models.CharField(max_length=15)
+    password = models.CharField(max_length=255)
 
     def __str__(self):
         return self.name
 
 class Vehicle(models.Model):
+    CAR = 'CR'
+    MOTORCYCLE = 'MC'
+
+    VEHICLE_TYPE_CHOICES = [
+        (CAR, 'Car'),
+        (MOTORCYCLE, 'Motorcycle'),
+    ]
+    vehicle_type = models.CharField(max_length=255, choices=VEHICLE_TYPE_CHOICES, default=CAR)
+    vehicle_id = models.CharField(max_length=255, unique=True, null=True)
     owner = models.ForeignKey('Employee', on_delete=models.CASCADE)
     model = models.CharField(max_length=200)
     number_of_seats = models.IntegerField(default=1)
-    employees = models.ManyToManyField(Employee, related_name='vehicles')
+    # employees = models.ManyToManyField(Employee, related_name='vehicles')
 
 
 class Ride(models.Model):

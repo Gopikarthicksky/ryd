@@ -11,9 +11,10 @@ from datetime import datetime
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from .serializers import VehicleSerializer, SignUpSerializer, SignInSerializer
 
 @method_decorator(csrf_exempt, name='dispatch')
-class RideListView(View):
+class RideListView(APIView):
     def get(self, request):
         rides = Ride.objects.all()
         ride_list = serializers.serialize('json', rides)
@@ -33,7 +34,7 @@ class RideListView(View):
 
 
 @method_decorator(csrf_exempt, name='dispatch')
-class RideDetailView(View):
+class RideDetailView(APIView):
     def get(self, request, pk):
         ride = get_object_or_404(Ride, pk=pk)
         ride_detail = serializers.serialize('json', [ride])
@@ -69,7 +70,8 @@ class AvailableRidesView(APIView):
     
         return None
 
-class LocationAutocompleteView(View):
+
+class LocationAutocompleteView(APIView):
     def get(self, request):
         query = request.GET.get('query')
         if not query:
@@ -83,3 +85,30 @@ class LocationAutocompleteView(View):
         })
 
         return JsonResponse(response.json(), safe=False)
+
+
+class RegisterVehicleView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = VehicleSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SignUpView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = SignUpSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class SignInView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = SignInSerializer(data=request.data)
+
+        if serializer.is_valid():
+            return Response({'message': 'Successful login!'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
