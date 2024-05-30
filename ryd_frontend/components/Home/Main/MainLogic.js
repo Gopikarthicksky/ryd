@@ -21,6 +21,12 @@ const MainLogic = () => {
     setToLocation(temp);
   };
 
+  const demoSearch = (res) =>{
+    
+    fetch('http://localhost:3000/search', {})
+    console.log("Searching for rides");
+  }
+
   const navigation = useNavigation();
 
   return (
@@ -31,7 +37,7 @@ const MainLogic = () => {
             style={MainLogicStyles.input}
             value={fromLocation}
             onChangeText={setFromLocation}
-            placeholder="From Location"
+            placeholder="CIEC"
             onPress={() => navigation.navigate("FromLocation")}
           />
         </View>
@@ -41,6 +47,7 @@ const MainLogic = () => {
             value={toLocation}
             onChangeText={setToLocation}
             placeholder="CIEC"
+            onPress={() => navigation.navigate("ToLocation")}
           />
         </View>
         <Ionicons
@@ -62,19 +69,39 @@ const MainLogic = () => {
         <DateTime />
       </View>
       <Pressable
-        onPress={() => {
+        onPress={(res) => {
+          demoSearch(res);
           navigation.navigate("Search");
         }}
         style={{
-          backgroundColor: "black",
-          width: 200,
+          backgroundColor: "#16ACDB",
+          width: 100,
           height: 40,
           alignItems: "center",
           justifyContent: "center",
           borderRadius: 10,
-          bottom: "7%",
+          // position: 'absolute',
+          // left: 60,
+          top: "1%",
         }}>
         <Text style={{ color: "white" }}>Search Rides</Text>
+      </Pressable>
+      <Text style={{ paddingTop: 10 }}>or</Text>
+      <Pressable
+        style={{
+          backgroundColor: "white",
+          width: 400,
+          height: 40,
+          alignItems: "center",
+          justifyContent: "center",
+          borderRadius: 10,
+          // position: 'relative',
+          // right: 60,
+          bottom: "0%",
+        }}
+         onPress={() => navigation.navigate("CreateRides")}
+        >
+        <Text style={{ color: "#0F93BD", textDecorationLine: "underline" }}>Click here to create rides</Text>
       </Pressable>
     </View>
   );
