@@ -4,10 +4,14 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import LoginPage from "./components/Login/LoginPage";
 import IntroPage from "./components/Home/IntroPage";
+import CreateRides from "./components/Browse/Create/CreateRides";
+import Ridecreation from "./components/Browse/Create/Ridecreation";
 import HomePage from "./components/Home/HomePage";
 import SignUpPage from "./components/SignUp/SignUpPage";
 import ProfileInfoPage from "./components/Profile/ProfileInfoPage";
 import SearchFromLocation from "./components/Browse/Locations/SearchFromLocation";
+import SearchToLocation from "./components/Browse/Locations/SearchToLocation";
+
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -52,6 +56,21 @@ export default function App() {
         <Stack.Screen
           name="FromLocation"
           component={SearchFromLocation}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ToLocation"
+          component={SearchToLocation}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="CreateRides"
+          component={CreateRides}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Ridecreation"
+          component={Ridecreation}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
