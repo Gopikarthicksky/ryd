@@ -272,6 +272,9 @@ class CreateRideResponseView(View):
             return JsonResponse({'error': 'Ride request not found.'}, status=status.HTTP_404_NOT_FOUND)
         except Employee.DoesNotExist:
             return JsonResponse({'error': 'Driver not found.'}, status=status.HTTP_404_NOT_FOUND)
+        
+        if RideResponse.objects.filter(ride_request_id=ride_request_id).exists():
+            return JsonResponse({'error': 'A response for this ride request already exists.'}, status=status.HTTP_400_BAD_REQUEST)
 
         ride_response = RideResponse()
         ride_response.ride_request = ride_request
