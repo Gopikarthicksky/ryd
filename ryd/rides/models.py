@@ -91,6 +91,11 @@ class RideResponse(models.Model):
         self.driver = driver
         self.status = 'A'
         self.save()
+        
+    def reject_request(self, driver):
+        self.driver = driver
+        self.status = 'R'
+        self.save()
     
     class Meta:
         unique_together = ('ride_request', 'driver')

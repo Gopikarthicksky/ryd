@@ -263,15 +263,24 @@ class CreateRideResponseView(View):
     def post(self, request, *args, **kwargs):
         driver_id = request.POST.get('driver_id')
         ride_request_id = request.POST.get('ride_request_id')
+        ride_status = request.POST.get('status')
 
-        driver = Employee.objects.get(id=driver_id)
-        ride_request = RideRequest.objects.get(id=ride_request_id)
+        try:
+            ride_request = RideRequest.objects.get(id=ride_request_id)
+            driver = Employee.objects.get(id=driver_id)
+        except RideRequest.DoesNotExist:
+            return JsonResponse({'error': 'Ride request not found.'}, status=status.HTTP_404_NOT_FOUND)
+        except Employee.DoesNotExist:
+            return JsonResponse({'error': 'Driver not found.'}, status=status.HTTP_404_NOT_FOUND)
 
         ride_response = RideResponse()
         ride_response.ride_request = ride_request
-        ride_response.accept_request(driver)
-
-        return JsonResponse({'message': 'Ride request accepted successfully'}, status=201)
+        if ride_status == 'A':
+            ride_response.accept_request(driver)
+            return JsonResponse({'message': 'Ride request accepted successfully'}, status=status.HTTP_201_CREATED)
+        elif ride_status == 'R':
+            ride_response.reject_request(driver)
+            return JsonResponse({'message': 'Ride request rejected successfully'}, status=status.HTTP_201_CREATED)
     
 @method_decorator(csrf_exempt, name='dispatch')
 class RideRequestResponseView(View):
