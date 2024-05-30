@@ -13,7 +13,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import SignUpSerializer, SignInSerializer, VehicleSerializer
-from .models import Vehicle, Employee, Ride
+from .models import Vehicle, Employee, Ride, RideRequest, RideResponse
 from django.utils.dateparse import parse_datetime
 from rest_framework import status
 from django.shortcuts import get_object_or_404
@@ -79,7 +79,7 @@ class CreateRideView(APIView):
 
         # driver = Employee.objects.get(id=driver_id)
         vehicle = Vehicle.objects.get(id=vehicle_id)
-        #breakpoint()
+        # breakpoint()
         vehicle_type = vehicle.vehicle_type
         driver_id = vehicle.employees.first().id
         # print(driver, vehicle, vehicle_type)
@@ -96,12 +96,10 @@ class CreateRideView(APIView):
             vehicle_type=vehicle_type,
             departure_time=departure_time,
             # arrival_time=arrival_time,
-            # driver_id=driver_id,
-            # vehicle_id=vehicle_id
+            driver=driver_id,
+            vehicle=vehicle_id
         )
-        breakpoint()
         ride.save()
-        breakpoint()
         # breakpoint()
         # breakpoint()
         # ride.employees.set([driver_id])
@@ -202,6 +200,7 @@ class EmployeeVehiclesView(APIView):
 
 class AvailableRidesView(APIView):
     def post(self, request, format=None):
+        print("coming in")
         user_origin_lat = request.data.get('origin_lat')
         user_origin_lng = request.data.get('origin_lng')
         user_destination_lat = request.data.get('destination_lat')
@@ -216,14 +215,16 @@ class AvailableRidesView(APIView):
 
         available_rides = []
 
+        key = "pk.fe474ac2da54fec72364bd4f6ef67a90"
         for ride in rides:
             # Get the route from the ride's origin to its destination
-            response1 = requests.get(f"https://eu1.locationiq.com/v1/directions/driving/{ride.origin_longitude},{ride.origin_latitude};{ride.destination_longitude},{ride.destination_latitude}?key=YOUR KEY HERE")
+
+            response1 = requests.get(f"https://eu1.locationiq.com/v1/directions/driving/{ride.origin_longitude},{ride.origin_latitude};{ride.destination_longitude},{ride.destination_latitude}?key={key}")
             total = response1.json()['routes'][0]['distance']
 
             # Get the route from the ride's origin to the user's destination, and from the user's destination to the ride's destination
-            response2 = requests.get(f"https://eu1.locationiq.com/v1/directions/driving/{ride.origin_longitude},{ride.origin_latitude};{user_destination_lng},{user_destination_lat}?key=YOUR KEY HERE")
-            response3 = requests.get(f"https://eu1.locationiq.com/v1/directions/driving/{user_destination_lng},{user_destination_lat};{ride.destination_longitude},{ride.destination_latitude}?key=YOUR KEY HERE")
+            response2 = requests.get(f"https://eu1.locationiq.com/v1/directions/driving/{ride.origin_longitude},{ride.origin_latitude};{user_destination_lng},{user_destination_lat}?key={key}")
+            response3 = requests.get(f"https://eu1.locationiq.com/v1/directions/driving/{user_origin_lng},{user_origin_lat};{ride.destination_longitude},{ride.destination_latitude}?key={key}")
             sum_of_distances = response2.json()['routes'][0]['distance'] + response3.json()['routes'][0]['distance']
 
             # If the total distance and the sum of the two distances are approximately equal, add the ride to the list of available rides
@@ -236,9 +237,61 @@ class AvailableRidesView(APIView):
                     'destination_lat': ride.destination_latitude,
                     'destination_lng': ride.destination_longitude,
                     'vehicle_type': ride.vehicle_type,
-                    'driver': ride.driver.name,
+                    'driver': Employee.objects.get(id=ride.driver).name,
                     'departure_time': ride.departure_time.strftime("%Y-%m-%dT%H:%M:%S")
                 }
                 available_rides.append(ride_data)
+        return JsonResponse({"rides":available_rides}, status=status.HTTP_200_OK)
+    
 
-        return Response(available_rides, status=status.HTTP_200_OK)
+@method_decorator(csrf_exempt, name='dispatch')
+class CreateRideRequestView(View):
+    def post(self, request, *args, **kwargs):
+        employee_id = request.POST.get('employee_id')
+        ride_id = request.POST.get('ride_id')
+
+        employee = Employee.objects.get(id=employee_id)
+        ride = Ride.objects.get(id=ride_id)
+
+        ride_request = RideRequest()
+        ride_request.create_request(employee, ride)
+
+        return JsonResponse({'message': 'Ride request created successfully'}, status=201)
+
+@method_decorator(csrf_exempt, name='dispatch')
+class CreateRideResponseView(View):
+    def post(self, request, *args, **kwargs):
+        driver_id = request.POST.get('driver_id')
+        ride_request_id = request.POST.get('ride_request_id')
+
+        driver = Employee.objects.get(id=driver_id)
+        ride_request = RideRequest.objects.get(id=ride_request_id)
+
+        ride_response = RideResponse()
+        ride_response.ride_request = ride_request
+        ride_response.accept_request(driver)
+
+        return JsonResponse({'message': 'Ride request accepted successfully'}, status=201)
+    
+@method_decorator(csrf_exempt, name='dispatch')
+class RideRequestResponseView(View):
+    def get(self, request, *args, **kwargs):
+        ride_request_id = request.GET.get('ride_request_id')
+
+        ride_request = RideRequest.objects.get(id=ride_request_id)
+        ride_responses = RideResponse.objects.filter(ride_request=ride_request)
+
+        response_data = {
+            'ride_request': {
+                'employee': ride_request.employee.name,
+                'ride': ride_request.ride.id,
+            },
+            'ride_responses': [
+                {
+                    'driver': ride_response.driver.name,
+                    'status': ride_response.status,
+                } for ride_response in ride_responses
+            ]
+        }
+
+        return JsonResponse(response_data, status=200)

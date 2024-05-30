@@ -1,5 +1,4 @@
 from django.db import models
-# from django.contrib.auth.models import User
 class Employee(models.Model):
     GENDER_CHOICES = (
         ('M', 'Male'),
@@ -47,7 +46,7 @@ class Ride(models.Model):
     vehicle_type = models.CharField(max_length=255, default='CR')
     departure_time = models.DateTimeField(null=True)
     # departure_tim = models.DateTimeField(null=True)
-    # arrival_time = models.DateTimeField(null=True)
+    arrival_time = models.DateTimeField(null=True)
     # employees = models.ManyToManyField(Employee, related_name='employee_rides')
     driver = models.CharField(max_length=255, default="")
     vehicle = models.CharField(max_length=255, default="")
@@ -57,4 +56,56 @@ class Ride(models.Model):
     def __str__(self):
         return str(self.id)
 
+class RideRequest(models.Model):
+    STATUS_CHOICES = (
+        ('P', 'Pending'),
+        ('A', 'Accepted'),
+        ('R', 'Rejected'),
+    )
 
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    ride = models.ForeignKey(Ride, on_delete=models.CASCADE)
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='P')
+
+    def create_request(self, employee, ride):
+        self.employee = employee
+        self.ride = ride
+        self.status = 'P'
+        self.save()
+    
+    class Meta:
+        unique_together = ('ride', 'employee')
+
+class RideResponse(models.Model):
+    STATUS_CHOICES = (
+        ('P', 'Pending'),
+        ('A', 'Accepted'),
+        ('R', 'Rejected'),
+    )
+
+    driver = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='driver_responses')
+    ride_request = models.ForeignKey(RideRequest, on_delete=models.CASCADE)
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='P')
+
+    def accept_request(self, driver):
+        self.driver = driver
+        self.status = 'A'
+        self.save()
+    
+    class Meta:
+        unique_together = ('ride_request', 'driver')
+
+# employee = Employee.objects.get(id=1)  # Replace with your employee id
+# ride = Ride.objects.get(id=1)  # Replace with your ride id
+
+# # Create a ride request
+# ride_request = RideRequest()
+# ride_request.create_request(employee, ride)
+
+# # Assuming you have a driver (which is also an Employee instance)
+# driver = Employee.objects.get(id=2)  # Replace with your driver id
+
+# # Create a ride response and accept the request
+# ride_response = RideResponse()
+# ride_response.ride_request = ride_request
+# ride_response.accept_request(driver)
