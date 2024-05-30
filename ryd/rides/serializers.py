@@ -4,20 +4,37 @@ from django.contrib.auth import authenticate
 from rest_framework import serializers
 from .models import Vehicle, Employee
 
-class VehicleSerializer(ModelSerializer):
+class VehicleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Vehicle
-        fields = ['vehicle_id', 'model', 'owner', 'number_of_seats', 'vehicle_type']
+        fields = ['vehicle_type', 'vehicle_id', 'model', 'number_of_seats', 'employees']
 
-    def validate_vehicle_id(self, value):
-        if Vehicle.objects.filter(vehicle_id=value).exists():
-            raise serializers.ValidationError("A vehicle with this ID already exists.")
-        return value
+# # serializers.py
+# from rest_framework import serializers
+# from .models import Vehicle, Employee
 
-    def create(self, validated_data):
-        vehicle = Vehicle(**validated_data)
-        vehicle.save()
-        return vehicle
+# class VehicleSerializer(serializers.ModelSerializer):
+#     # employees = serializers.PrimaryKeyRelatedField(many=True, write_only=True, queryset=Employee.objects.all())
+
+#     class Meta:
+#         model = Vehicle
+#         fields = ['vehicle_id', 'model', 'number_of_seats', 'employees', 'vehicle_type']
+
+#     # def validate_vehicle_id(self, value):
+#     #     if Vehicle.objects.filter(vehicle_id=value).exists():
+#     #         raise serializers.ValidationError("A vehicle with this ID already exists.")
+#     #     return value
+
+#     def create(self, validated_data):
+#         employee_ids = validated_data.pop('employees')
+#         employees = Employee.objects.get(employee_id=employee_ids)
+#         if len(employees) != len(employee_ids):
+#             raise serializers.ValidationError("Some employees with provided IDs do not exist.")
+
+#         vehicle = Vehicle(**validated_data)
+#         vehicle.save()
+#         vehicle.employees.set(employees)
+#         return vehicle
 
 
 class SignUpSerializer(ModelSerializer):
