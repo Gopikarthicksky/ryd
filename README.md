@@ -1,4 +1,4 @@
-# Ride-Sharing App
+# Ride-Sharing App - RYD
 
 This is a ride-sharing app built with React Native Web. The app allows users to create rides and view details of available rides.
 
@@ -19,7 +19,7 @@ To install the app, follow these steps:
 
 # Ryd - Your Personal Ride-Sharing App
 
-Welcome to Ryd, a user-friendly ride-sharing app designed to make your daily commute easier and safer. Built with React Native Web, R
+Welcome to Ryd, a user-friendly ride-sharing app designed to make your daily commute easier and safer. Built with React Native Web and Django, R
 yd offers a seamless experience across different platforms, allowing you to book a ride anytime, anywhere.
 
 ## Features
