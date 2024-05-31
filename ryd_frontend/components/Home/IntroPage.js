@@ -11,7 +11,7 @@ const IntroPage = ({ navigation }) => {
         contentFit="contain"
       />
       <Text style={IntroPageStyles.title}>Ryd.</Text>
-      <Text style={IntroPageStyles.subTitle}>A CIEC Product</Text>
+      <Text style={IntroPageStyles.subTitle}>Our Product</Text>
       <View style={IntroPageStyles.intro}>
         <Text style={IntroPageStyles.bottomTitle}>How it works</Text>
         <Text style={IntroPageStyles.bottomTitleDescription}>
@@ -29,7 +29,7 @@ const IntroPage = ({ navigation }) => {
                 Search for a ride
               </Text>
               <Text style={IntroPageStyles.feature1Description}>
-                Select the destination and ride along {"\n"}with your CIEC
+                Select the destination and ride along {"\n"}with your 
                 collegues.
               </Text>
             </View>
@@ -43,7 +43,7 @@ const IntroPage = ({ navigation }) => {
                 Ask the driver to join
               </Text>
               <Text style={IntroPageStyles.feature2Description}>
-                Ping your driving CIEC collegue to {"\n"}accept your travel
+                Ping your driving collegue to {"\n"}accept your travel
                 request
               </Text>
             </View>
@@ -55,7 +55,7 @@ const IntroPage = ({ navigation }) => {
             <View style={IntroPageStyles.feature3Details}>
               <Text style={IntroPageStyles.feature3Title}>Enjoy!</Text>
               <Text style={IntroPageStyles.feature3Description}>
-                You are now all set to start your ride{"\n"}to the CIEC
+                You are now all set to start your ride{"\n"}to the company
               </Text>
             </View>
           </View>
