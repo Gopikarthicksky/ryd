@@ -46,6 +46,29 @@ Navigate to the "Ride Details" page to view details of available rides.
 
 Click on a ride to select it.
 
+## API Documentation
+
+Our API is documented using Swagger, an open-source tool for designing, building, and documenting RESTful APIs. The Swagger documentation provides a detailed description of each endpoint, including the HTTP method, parameters, request body, response body, and status codes. It also provides `curl` commands for each endpoint, which you can use to test the API from the command line.
+
+You can access the Swagger documentation to understand the endpoints which is integrated into this app.
+
+Here's an example of how you can use a `curl` command from the Swagger documentation to test an endpoint:
+
+```bash
+POST /create_ride
+curl --location 'http://127.0.0.1:8000/create_ride/' \
+--form 'origin="Chennai Meenambakkam Airport"' \
+--form 'destination="Comcast India Engineering Center"' \
+--form 'passengers="3"' \
+--form 'origin_latitude="12.993374"' \
+--form 'origin_longitude="80.17258667"' \
+--form 'destination_latitude="12.9469572"' \
+--form 'destination_longitude="80.2313978"' \
+--form 'departure_time="2024-05-30T10:30:00"' \
+--form 'arrival_time="2024-05-30T10:30:00"' \
+--form 'driver="123456"' \
+--form 'vehicle_id="14"'
+
 ## Contributing
 
 Contributions are welcome! Please open an issue or submit a pull request.
