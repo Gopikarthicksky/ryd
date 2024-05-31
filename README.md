@@ -56,6 +56,8 @@ Our API is documented using Swagger, an open-source tool for designing, building
 
 You can access the Swagger documentation to understand the endpoints which is integrated into this app.
 
+Figma link: https://www.figma.com/design/XAC7mhuCjvM2s5Pq8mP9df/RideShare?node-id=0-1&t=UCxux06YWBToPbNc-0
+
 Here's an example of how you can use a `curl` command from the Swagger documentation to test an endpoint:
 
 ```bash
