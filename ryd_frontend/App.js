@@ -11,6 +11,9 @@ import SignUpPage from "./components/SignUp/SignUpPage";
 import ProfileInfoPage from "./components/Profile/ProfileInfoPage";
 import SearchFromLocation from "./components/Browse/Locations/SearchFromLocation";
 import SearchToLocation from "./components/Browse/Locations/SearchToLocation";
+import CreateFromLocation from "./components/Browse/CreateLocation/CreateFromLocation";
+import CreateToLocation from "./components/Browse/CreateLocation/CreateToLocation";
+import SearchResult from "./components/Browse/Search/SearchRides";
 
 
 const Stack = createStackNavigator();
@@ -47,6 +50,7 @@ export default function App() {
           name="Home"
           component={HomePage}
           options={{ headerShown: false }}
+          initialParams={{ sLocation: '',dLocation: ''}}
         />
         {/*         <Stack.Screen
           name="Profile"
@@ -64,13 +68,29 @@ export default function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen
+          name="CreateFromLocation"
+          component={CreateFromLocation}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="CreateToLocation"
+          component={CreateToLocation}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="CreateRides"
           component={CreateRides}
           options={{ headerShown: false }}
+          initialParams={{ sLocation: ''}}
         />
         <Stack.Screen
           name="Ridecreation"
           component={Ridecreation}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SearchResult"
+          component={SearchResult}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

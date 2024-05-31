@@ -37,7 +37,7 @@ const SearchFromLocation = ({ navigation }) => {
         name="arrow-back-outline"
         size={25}
         color="grey"
-        onPress={() => navigation.navigate("Home")}
+        onPress={() => navigation.navigate("CreateRides")}
         style={{ position: "absolute", top: 17, left: 18, zIndex: 1 }}
       />
       <View style={styles.searchBar}>
@@ -61,7 +61,7 @@ const SearchFromLocation = ({ navigation }) => {
           renderItem={({ item }) => (
             <Pressable
               onPress={() => {
-                navigation.navigate("Home", {sLocation: item});
+                navigation.navigate("CreateRides", {sLocation: item});
               }}>
               <Text style={{ marginBottom: 15, fontSize: 16 }}>{item.display_place}</Text>
               <View

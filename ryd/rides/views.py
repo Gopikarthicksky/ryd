@@ -125,20 +125,21 @@ class LocationAutocompleteView(APIView):
         })
         data = response.json()
         location = []
-        for entry in data:
-            # Extract the required fields
-            display_place = entry.get('display_place')
-            display_address = entry.get('display_address')
-            lat = entry.get('lat')
-            lon = entry.get('lon')
+        if data:
+            for entry in data:
+                # Extract the required fields
+                display_place = entry.get('display_place')
+                display_address = entry.get('display_address')
+                lat = entry.get('lat')
+                lon = entry.get('lon')
 
-            # Add the extracted data to the list
-            location.append({
-                'display_place': display_place,
-                'display_address': display_address,
-                'lat': lat,
-                'lon': lon,
-            })
+                # Add the extracted data to the list
+                location.append({
+                    'display_place': display_place,
+                    'display_address': display_address,
+                    'lat': lat,
+                    'lon': lon,
+                })
         print(location)
         return JsonResponse(location, safe=False)
 

@@ -11,6 +11,7 @@ import {
 import CheckBox from "expo-checkbox";
 import DropDownPicker from "react-native-dropdown-picker";
 import DateTime from "/Users/mae312/ryd/ryd_frontend/components/Browse/Create/DateTime.js";
+import { useNavigation } from "@react-navigation/native";
 
 const getRideDetails = () => {
   return {
@@ -24,7 +25,13 @@ const getRideDetails = () => {
   };
 };
 
-const CreateRides = ({ navigation }) => {
+const CreateRides = ({ route }) => {
+  console.log("=========my")
+  console.log(route);
+  console.log(route.params);
+  const { sLocation} = route.params;
+  console.log("user from Search From createpage.js   --------------->",sLocation);
+
   const [fromLocation, setFromLocation] = useState("");
   const [toLocation, setToLocation] = useState("CIEC");
 
@@ -57,6 +64,8 @@ const CreateRides = ({ navigation }) => {
     }
     return true
   };
+  
+  const navigation = useNavigation();
 
   return (
     <View style={SignUpPageStyles.container}>
@@ -64,16 +73,18 @@ const CreateRides = ({ navigation }) => {
       <TextInput
         style={SignUpPageStyles.input}
         placeholder="Origin"
-        value={origin}
+        value={sLocation.display_place}
         onChangeText={setorigin}
-        onPress={() => navigation.navigate("FromLocation")}
+        onPress={() => navigation.navigate("CreateFromLocation")}
+        
+
       />
       <TextInput
         style={SignUpPageStyles.input}
         placeholder="Drop"
-        value={drop}
+        value={sLocation.display_place}
         onChangeText={setdrop}
-        keyboardType="phone-pad"
+        onPress={() => navigation.navigate("ToLocation")}
       />
       <DateTime 
       style={{

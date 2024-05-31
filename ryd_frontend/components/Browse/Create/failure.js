@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from "react-native";
 
-const SuccessPage = () => {
+const FailurePage = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.text}>Please try again to create ride</Text>
@@ -22,4 +22,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default SuccessPage;
+export default FailurePage;
