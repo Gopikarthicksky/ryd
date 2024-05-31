@@ -1,5 +1,5 @@
 from rest_framework.serializers import ModelSerializer
-from django.contrib.auth.hashers import make_password
+from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from .models import Vehicle, Employee
@@ -64,15 +64,25 @@ class SignUpSerializer(ModelSerializer):
 
 
 class SignInSerializer(ModelSerializer):
+    class Meta:
+        model = Employee
+        fields = ['username', 'password']
     username = serializers.CharField()
     password = serializers.CharField()
 
     def validate(self, data):
         username = data.get('username')
         password = data.get('password')
-        user = authenticate(username=username, password=password)
+        if not username or not password:
+            raise serializers.ValidationError("Both username and password are required.")
 
-        if user is not None:
-            return data
-        else:
-            raise serializers.ValidationError("Invalid username/password.")
+        User = Employee
+        try:
+            user = User.objects.get(name=username)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("Invalid username or password.")
+
+        if not check_password(password, user.password):
+            raise serializers.ValidationError("Invalid username or password.")
+
+        return data

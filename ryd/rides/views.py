@@ -1,5 +1,8 @@
 # views.py
 import requests
+from django.contrib.auth import authenticate, login, get_user_model
+from django.contrib.auth import SESSION_KEY, BACKEND_SESSION_KEY, HASH_SESSION_KEY
+from django.contrib.auth.hashers import check_password
 from django.http import JsonResponse
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
@@ -186,7 +189,6 @@ class SignInView(APIView):
         if serializer.is_valid():
             return Response({'message': 'Successful login!'}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
 
 
 class EmployeeVehiclesView(APIView):

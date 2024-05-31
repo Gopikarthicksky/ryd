@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.hashers import make_password
 class Employee(models.Model):
     GENDER_CHOICES = (
         ('M', 'Male'),
@@ -15,6 +16,8 @@ class Employee(models.Model):
 
     def __str__(self):
         return str(self.id)
+    def get_session_auth_hash(self):
+        return make_password(self.password)
 
 class Vehicle(models.Model):
     CAR = 'CR'
@@ -91,7 +94,7 @@ class RideResponse(models.Model):
         self.driver = driver
         self.status = 'A'
         self.save()
-        
+
     def reject_request(self, driver):
         self.driver = driver
         self.status = 'R'
