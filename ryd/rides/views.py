@@ -15,7 +15,7 @@ import requests
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import SignUpSerializer, SignInSerializer, VehicleSerializer
+from .serializers import SignUpSerializer, SignInSerializer, VehicleSerializer, RideSerializer
 from .models import Vehicle, Employee, Ride, RideRequest, RideResponse
 from django.utils.dateparse import parse_datetime
 from rest_framework import status
@@ -25,8 +25,8 @@ from django.shortcuts import get_object_or_404
 class RideListView(APIView):
     def get(self, request):
         rides = Ride.objects.all()
-        ride_list = serializers.serialize('json', rides)
-        return JsonResponse(ride_list, safe=False)
+        serializer = RideSerializer(rides, many=True)
+        return Response(serializer.data)
 
     def post(self, request):
         new_ride = Ride.objects.create(
@@ -225,7 +225,7 @@ class AvailableRidesView(APIView):
             total = response1.json()['routes'][0]['distance']
 
             # Get the route from the ride's origin to the user's destination, and from the user's destination to the ride's destination
-            response2 = requests.get(f"https://eu1.locationiq.com/v1/directions/driving/{ride.origin_longitude},{ride.origin_latitude};{user_destination_lng},{user_destination_lat}?key={key}")
+            response2 = requests.get(f"https://eu1.locationiq.com/v1/directions/driving/{ride.origin_longitude},{ride.origin_latitude};{user_origin_lng},{user_origin_lat}?key={key}")
             response3 = requests.get(f"https://eu1.locationiq.com/v1/directions/driving/{user_origin_lng},{user_origin_lat};{ride.destination_longitude},{ride.destination_latitude}?key={key}")
             sum_of_distances = response2.json()['routes'][0]['distance'] + response3.json()['routes'][0]['distance']
 
@@ -254,7 +254,9 @@ class CreateRideRequestView(View):
 
         employee = Employee.objects.get(id=employee_id)
         ride = Ride.objects.get(id=ride_id)
-
+        
+        if RideRequest.objects.filter(ride_id=ride).exists():
+            return JsonResponse({'error': 'A request for this ride request already exists.'}, status=status.HTTP_400_BAD_REQUEST)
         ride_request = RideRequest()
         ride_request.create_request(employee, ride)
 
@@ -266,6 +268,10 @@ class CreateRideResponseView(View):
         driver_id = request.POST.get('driver_id')
         ride_request_id = request.POST.get('ride_request_id')
         ride_status = request.POST.get('status')
+        # try:
+        #     ride_request = RideRequest.objects.create(ride_request_id=ride_request_id)
+        # except IntegrityError:
+        #     return Response({"error": "A ride request with this ID already exists."}, status=400)
 
         try:
             ride_request = RideRequest.objects.get(id=ride_request_id)
@@ -309,3 +315,17 @@ class RideRequestResponseView(View):
         }
 
         return JsonResponse(response_data, status=status.HTTP_200_OK)
+    
+
+class CancelRideRequestView(APIView):
+    def post(self, request, ride_request_id):
+        try:
+            breakpoint()
+            ride_request = RideRequest.objects.get(id=ride_request_id)
+        except RideRequest.DoesNotExist:
+            return Response({'error': 'Ride request not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        ride_request.status = 'C'
+        ride_request.save()
+
+        return Response({'message': 'Ride request cancelled successfully'}, status=status.HTTP_200_OK)

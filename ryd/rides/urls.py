@@ -1,6 +1,6 @@
 # urls.py
 from django.urls import path
-from .views import RideListView, RideDetailView, CreateRideView, LocationAutocompleteView, SignUpView, SignInView, VehicleView, EmployeeVehiclesView, AvailableRidesView, CreateRideRequestView, CreateRideResponseView, RideRequestResponseView
+from .views import RideListView, RideDetailView, CreateRideView, LocationAutocompleteView, SignUpView, SignInView, VehicleView, EmployeeVehiclesView, AvailableRidesView, CreateRideRequestView, CreateRideResponseView, RideRequestResponseView, CancelRideRequestView
 
 # from .views import CreateRideRequestView
 
@@ -17,4 +17,5 @@ urlpatterns = [
     path('ride-request/', CreateRideRequestView.as_view(), name='ride-request'),
     path('ride-response/', CreateRideResponseView.as_view(), name='ride-response'),
     path('ride-request-response/', RideRequestResponseView.as_view(), name='ride-request-response'),
+    path('ride_request/<int:ride_request_id>/cancel', CancelRideRequestView.as_view(), name='cancel_ride_request'),
 ]
