@@ -46,6 +46,10 @@ Navigate to the "Ride Details" page to view details of available rides.
 
 Click on a ride to select it.
 
+## Contributing
+
+Contributions are welcome! Please open an issue or submit a pull request.
+
 ## API Documentation
 
 Our API is documented using Swagger, an open-source tool for designing, building, and documenting RESTful APIs. The Swagger documentation provides a detailed description of each endpoint, including the HTTP method, parameters, request body, response body, and status codes. It also provides `curl` commands for each endpoint, which you can use to test the API from the command line.
@@ -69,7 +73,7 @@ curl --location 'http://127.0.0.1:8000/create_ride/' \
 --form 'driver="123456"' \
 --form 'vehicle_id="14"'
 
-## Contributing
 
-Contributions are welcome! Please open an issue or submit a pull request.
+
+
 
