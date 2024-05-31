@@ -1,0 +1,474 @@
+openapi: 3.0.0
+info:
+  title: Employee Vehicles API
+  version: 1.0.0
+  description: API for managing employee vehicles and rides
+servers:
+  - url: http://127.0.0.1:8000
+paths:
+  /api/employee/{employee_id}/vehicles/:
+    get:
+      summary: Get vehicles for an employee
+      parameters:
+        - name: employee_id
+          in: path
+          required: true
+          description: ID of the employee
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of vehicles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    vehicle_type:
+                      type: string
+                      example: CR
+                    vehicle_id:
+                      type: string
+                      example: test_12345cccscdcdcvdccdscdccd
+                    model:
+                      type: string
+                      example: Alto
+                    number_of_seats:
+                      type: integer
+                      example: 3
+                    employees:
+                      type: array
+                      items:
+                        type: integer
+                      example:
+                        - 5
+        '404':
+          description: Employee not found
+  /signup/:
+    post:
+      summary: Sign up a new employee
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: test1
+                employee_id:
+                  type: string
+                  example: 1234561
+                email_id:
+                  type: string
+                  format: email
+                  example: test1@email.com
+                gender:
+                  type: string
+                  enum:
+                    - M
+                    - F
+                  example: M
+                mobile_number:
+                  type: string
+                  example: 9876543210
+                password:
+                  type: string
+                  format: password
+                  example: test1
+      responses:
+        '201':
+          description: Employee created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  name:
+                    type: string
+                    example: test1
+                  employee_id:
+                    type: string
+                    example: 1234561
+                  email_id:
+                    type: string
+                    example: test1@email.com
+                  gender:
+                    type: string
+                    example: M
+                  mobile_number:
+                    type: string
+                    example: 9876543210
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid input data
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Employee already exists
+  /signin/:
+    post:
+      summary: Sign in an employee
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: test
+                password:
+                  type: string
+                  format: password
+                  example: test
+      responses:
+        '200':
+          description: Successful sign-in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                  user_id:
+                    type: integer
+                    example: 1
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid credentials
+  /register_vehicle/:
+    post:
+      summary: Register a new vehicle
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                vehicle_id:
+                  type: string
+                  example: test_vehicle
+                model:
+                  type: string
+                  example: Hyundai Venue
+                employee_ids:
+                  type: string
+                  example: 123456
+                number_of_seats:
+                  type: integer
+                  example: 3
+                vehicle_type:
+                  type: string
+                  example: CR
+      responses:
+        '201':
+          description: Vehicle created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Vehicle created successfully.
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid input data
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Vehicle already exists
+  /create_ride/:
+    post:
+      summary: Create a new ride
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                origin:
+                  type: string
+                  example: Chennai Meenambakkam Airport
+                destination:
+                  type: string
+                  example: Comcast India Engineering Center
+                passengers:
+                  type: integer
+                  example: 3
+                origin_latitude:
+                  type: string
+                  example: 12.993374
+                origin_longitude:
+                  type: string
+                  example: 80.17258667
+                destination_latitude:
+                  type: string
+                  example: 12.9469572
+                destination_longitude:
+                  type: string
+                  example: 80.2313978
+                departure_time:
+                  type: string
+                  format: date-time
+                  example: '2024-05-30T10:30:00.000Z'
+                arrival_time:
+                  type: string
+                  format: date-time
+                  example: '2024-05-30T10:30:00.000Z'
+                driver:
+                  type: string
+                  example: 123456
+                vehicle_id:
+                  type: string
+                  example: 14
+      responses:
+        '201':
+          description: Ride created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Ride created successfully.
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid input data
+        '409':
+          description: Conflict
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Ride already exists
+  /available_rides/:
+    post:
+      summary: Get available rides
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                origin_lat:
+                  type: string
+                  example: 12.99
+                origin_lng:
+                  type: string
+                  example: 80.21
+                destination_lat:
+                  type: string
+                  example: 12.94
+                destination_lng:
+                  type: string
+                  example: 80.2313978
+                departure_time:
+                  type: string
+                  format: date-time
+                  example: '2024-05-30T10:30:00.000Z'
+      responses:
+        '200':
+          description: A list of available rides
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  rides:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        origin:
+                          type: string
+                          example: Chennai Meenambakkam Airport
+                        destination:
+                          type: string
+                          example: Comcast India Engineering Center
+                        origin_lat:
+                          type: number
+                          example: 12.993374
+                        origin_lng:
+                          type: number
+                          example: 80.17258667
+                        destination_lat:
+                          type: number
+                          example: 12.9469572
+                        destination_lng:
+                          type: number
+                          example: 80.2313978
+                        vehicle_type:
+                          type: string
+                          example: CR
+                        driver:
+                          type: string
+                          example: test
+                        departure_time:
+                          type: string
+                          format: date-time
+                          example: '2024-05-30T10:30:00.000Z'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid input data
+        '404':
+          description: No rides found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: No available rides found
+  /ride-request/:
+    post:
+      summary: Create a new ride request
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                employee_id:
+                  type: string
+                  example: 5
+                ride_id:
+                  type: string
+                  example: 11
+      responses:
+        '201':
+          description: Ride request created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Ride request created successfully
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid input data
+  /ride-response/:
+    post:
+      summary: Respond to a ride request
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                driver_id:
+                  type: string
+                  example: 5
+                ride_request_id:
+                  type: string
+                  example: 18
+                status:
+                  type: string
+                  example: A
+      responses:
+        '200':
+          description: Ride request accepted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Ride request accepted successfully
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Invalid input data
+        '404':
+          description: Ride request not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Ride request not found
