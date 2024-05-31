@@ -38,7 +38,7 @@ class RideListView(APIView):
             arrival_time=request.POST['arrival_time'],
             available_seats=request.POST['available_seats'],
         )
-        return JsonResponse({'ride_id': new_ride.id}, status=201)
+        return JsonResponse({'ride_id': new_ride.id}, status=status.HTTP_201_CREATED)
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -54,14 +54,14 @@ class RideDetailView(APIView):
             ride.passengers.add(request.user)
             ride.available_seats -= 1
             ride.save()
-            return JsonResponse({'message': 'Successfully joined the ride.'}, status=200)
+            return JsonResponse({'message': 'Successfully joined the ride.'}, status=status.HTTP_200_OK)
         elif 'leave' in request.POST:
             ride.passengers.remove(request.user)
             ride.available_seats += 1
             ride.save()
-            return JsonResponse({'message': 'Successfully left the ride.'}, status=200)
+            return JsonResponse({'message': 'Successfully left the ride.'}, status=status.HTTP_200_OK)
         else:
-            return JsonResponse({'error': 'Invalid action.'}, status=400)
+            return JsonResponse({'error': 'Invalid action.'}, status=status.HTTP_400_BAD_REQUEST)
 
 class CreateRideView(APIView):
     def post(self, request, format=None):
@@ -115,7 +115,7 @@ class LocationAutocompleteView(APIView):
     def get(self, request):
         query = request.GET.get('q')
         if not query:
-            return JsonResponse({'error': 'Missing required parameter.'}, status=400)
+            return JsonResponse({'error': 'Missing required parameter.'}, status=status.HTTP_400_BAD_REQUEST)
 
         response = requests.get('https://api.locationiq.com/v1/autocomplete', params={
             'key': 'pk.a81422c5e313a53d03e8254b6e5da929',
@@ -152,10 +152,10 @@ class VehicleView(View):
         number_of_seats = request.POST.get('number_of_seats')
         vehicle_type = request.POST.get('vehicle_type')
         employee_ids = request.POST.get('employee_ids')
-        print(employee_ids)
-        print( type(employee_ids))
         if Vehicle.objects.filter(vehicle_id=vehicle_id).exists():
-            return JsonResponse({"error": "A vehicle with this ID already exists."}, status=400)
+            return JsonResponse({"error": "A vehicle with this ID already exists."}, status=status.HTTP_400_BAD_REQUEST)
+        if vehicle_type == 'MC' and number_of_seats != '1':
+            return JsonResponse({'error': 'Motorcycles must have exactly 1 seat.'}, status=status.HTTP_400_BAD_REQUEST)
 
         employees = Employee.objects.get(employee_id=employee_ids)
         # print(Employee.objects.get(employee_id=employee_ids))
@@ -164,13 +164,13 @@ class VehicleView(View):
         # print(Employee.objects.filter(employee_id__in=employee_ids))
         # print("yes")
         # if len(employees) != len(employee_ids):
-        #     return JsonResponse({"error": "Some employees with provided IDs do not exist."}, status=400)
+        #     return JsonResponse({"error": "Some employees with provided IDs do not exist."}, status=status.HTTP_400_BAD_REQUEST)
 
         vehicle = Vehicle(vehicle_id=vehicle_id, model=model, number_of_seats=number_of_seats, vehicle_type=vehicle_type)
         vehicle.save()
         vehicle.employees.set([employees])
 
-        return JsonResponse({"message": "Vehicle created successfully."}, status=201)
+        return JsonResponse({"message": "Vehicle created successfully."}, status=status.HTTP_201_CREATED)
 
 
 class SignUpView(APIView):
@@ -258,7 +258,7 @@ class CreateRideRequestView(View):
         ride_request = RideRequest()
         ride_request.create_request(employee, ride)
 
-        return JsonResponse({'message': 'Ride request created successfully'}, status=201)
+        return JsonResponse({'message': 'Ride request created successfully'}, status=status.HTTP_201_CREATED)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class CreateRideResponseView(View):
@@ -308,4 +308,4 @@ class RideRequestResponseView(View):
             ]
         }
 
-        return JsonResponse(response_data, status=200)
+        return JsonResponse(response_data, status=status.HTTP_200_OK)
