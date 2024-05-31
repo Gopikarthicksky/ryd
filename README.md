@@ -1,6 +1,6 @@
 # Ride-Sharing App - RYD
 
-This is a ride-sharing app built with React Native Web. The app allows users to create rides and view details of available rides.
+This is a ride-sharing app built with React Native Web and django with help of Github copilot. The app allows users to create rides and view details of available rides.
 
 ## Features
 
