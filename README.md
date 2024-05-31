@@ -73,6 +73,24 @@ curl --location 'http://127.0.0.1:8000/create_ride/' \
 --form 'driver="123456"' \
 --form 'vehicle_id="14"'
 
+POST /available_rides
+curl --location 'http://127.0.0.1:8000/available_rides/' \
+--form 'origin_lat="12.99"' \
+--form 'origin_lng="80.21"' \
+--form 'destination_lat="12.94"' \
+--form 'destination_lng="80.2313978"' \
+--form 'departure_time="2024-05-30T10:30:00"'
+
+
+/Signup
+curl --location 'http://127.0.0.1:8000/signup/' \
+--form 'name="test"' \
+--form 'employee_id="123456"' \
+--form 'email_id="test@email.com"' \
+--form 'gender="M"' \
+--form 'mobile_number="9876543210"' \
+--form 'password="test"'
+
 
 
 
