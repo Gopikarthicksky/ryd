@@ -12,10 +12,12 @@ This is a ride-sharing app built with React Native Web and django with help of G
 
 To install the app, follow these steps:
 
-1. Clone the repository: `git clone git@github.com:sky-uk/ryd.git`
+1. Clone the repository: `git clone https://github.com/Gopikarthicksky/ryd`
 2. Navigate into the project directory: `cd ryd/ryd_frontend
 3. Install the dependencies: `npm install`
-4. Start the app: `npm start`
+4. Start frontend for the app : `npm start`
+5. Start backend : `cd ryd/ryd python manage.py runserver
+6. start db : `cd ryd/ryd/containers/mysql , docker-compose up
 
 # Ryd - Your Personal Ride-Sharing App
 
