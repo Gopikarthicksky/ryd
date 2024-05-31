@@ -33,7 +33,7 @@ const CreateRides = ({ route }) => {
   console.log("user from Search From createpage.js   --------------->",sLocation);
 
   const [fromLocation, setFromLocation] = useState("");
-  const [toLocation, setToLocation] = useState("CIEC");
+  const [toLocation, setToLocation] = useState("COMPANY");
 
   const swapLocations = () => {
     const temp = fromLocation;
