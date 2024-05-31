@@ -14,7 +14,7 @@ import { useNavigation } from "@react-navigation/native";
 const MainLogic = ({sLocation}) => {
   console.log(sLocation, "user from Search From HomePage.js");
   const [fromLocation, setFromLocation] = useState(sLocation);
-  const [toLocation, setToLocation] = useState("CIEC");
+  const [toLocation, setToLocation] = useState("Company");
   console.log(sLocation, '<----------- main lOoooooooooooooooo')
 
   const swapLocations = () => {
@@ -39,7 +39,7 @@ const MainLogic = ({sLocation}) => {
             style={MainLogicStyles.input}
             value={sLocation}
             onChangeText={setFromLocation}
-            placeholder="CIEC"
+            placeholder="Company"
             onPress={() => navigation.navigate("FromLocation")}
           />
         </View>
@@ -48,7 +48,7 @@ const MainLogic = ({sLocation}) => {
             style={MainLogicStyles.input}
             value={sLocation}
             onChangeText={setToLocation}
-            placeholder="CIEC"
+            placeholder="Company"
             onPress={() => navigation.navigate("ToLocation")}
           />
         </View>
