@@ -25,7 +25,7 @@ SECRET_KEY = 'jango-insecure-vgdu+l%8uc6ek6bhjxm2x+n7p#6z_0a9z#&mj!ln7@9=&n$pmn'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["10.126.55.177", "10.126.55.255", "127.0.0.1"]
+ALLOWED_HOSTS = ["10.126.55.177", "10.126.55.255", "127.0.0.1", "10.126.46.42", "10.126.51.235"]
 
 
 # Application definition

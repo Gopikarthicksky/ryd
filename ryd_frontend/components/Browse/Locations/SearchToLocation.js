@@ -10,10 +10,13 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
 import { debounce } from "lodash";
+import { useRoute } from '@react-navigation/native';
+
 
 const SearchToLocation = ({ navigation }) => {
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const route = useRoute();
 
   const fetchData = debounce(() => {
     axios
@@ -59,7 +62,7 @@ const SearchToLocation = ({ navigation }) => {
             <Pressable
               onPress={() => {
                 console.log(item);
-                navigation.navigate("Home");
+                navigation.navigate("Home", {dLocation: item});
               }}>
               <Text style={{ marginBottom: 15, fontSize: 16 }}>{item.display_place}</Text>
               <View

@@ -105,7 +105,7 @@ const DateTimeStyles = StyleSheet.create({
   },
   input: {
     height: 40,
-    width: 305,
+    width: 325,
     borderColor: "gray",
     borderWidth: 1,
     borderRadius: 10,
@@ -113,7 +113,7 @@ const DateTimeStyles = StyleSheet.create({
     marginBottom: 10,
     position: "relative",
     marginLeft: 30,
-    top: 107,
+    top: 120,
     backgroundColor: "white",
   },
   dateBox: {

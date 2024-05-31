@@ -13,14 +13,14 @@ import { debounce } from "lodash";
 import { useRoute } from '@react-navigation/native';
 
 
-const SearchFromLocation = ({ navigation }) => {
+const SearchToLocation = ({ navigation }) => {
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const route = useRoute();
 
   const fetchData = debounce(() => {
     axios
-      .get(`http://10.126.51.235:8000/location_autocomplete/?q=${searchTerm}`)
+      .get(`http://10.126.55.177:8000/location_autocomplete/?q=${searchTerm}`)
       .then((response) => {
         setData(response.data);
         console.log(data);
@@ -37,7 +37,7 @@ const SearchFromLocation = ({ navigation }) => {
         name="arrow-back-outline"
         size={25}
         color="grey"
-        onPress={() => navigation.navigate("Home")}
+        onPress={() => navigation.navigate("CreateRides")}
         style={{ position: "absolute", top: 17, left: 18, zIndex: 1 }}
       />
       <View style={styles.searchBar}>
@@ -48,7 +48,7 @@ const SearchFromLocation = ({ navigation }) => {
             setSearchTerm(text);
             fetchData(text);
           }}
-          placeholder="Select the boarding point"
+          placeholder="Select the destination point"
         />
         <Pressable  style={{ top: 7 }}>
           <Ionicons name="search" size={25} color="grey" />
@@ -61,7 +61,8 @@ const SearchFromLocation = ({ navigation }) => {
           renderItem={({ item }) => (
             <Pressable
               onPress={() => {
-                navigation.navigate("Home", {sLocation: item});
+                console.log(item);
+                navigation.navigate("CreateRides", {sLocation: item});
               }}>
               <Text style={{ marginBottom: 15, fontSize: 16 }}>{item.display_place}</Text>
               <View
@@ -106,4 +107,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SearchFromLocation;
+export default SearchToLocation;

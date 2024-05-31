@@ -11,9 +11,11 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import DateTime from "./DateTime";
 import { useNavigation } from "@react-navigation/native";
 
-const MainLogic = () => {
-  const [fromLocation, setFromLocation] = useState("");
+const MainLogic = ({sLocation}) => {
+  console.log(sLocation, "user from Search From HomePage.js");
+  const [fromLocation, setFromLocation] = useState(sLocation);
   const [toLocation, setToLocation] = useState("CIEC");
+  console.log(sLocation, '<----------- main lOoooooooooooooooo')
 
   const swapLocations = () => {
     const temp = fromLocation;
@@ -35,7 +37,7 @@ const MainLogic = () => {
         <View style={MainLogicStyles.fromLocation}>
           <TextInput
             style={MainLogicStyles.input}
-            value={fromLocation}
+            value={sLocation}
             onChangeText={setFromLocation}
             placeholder="CIEC"
             onPress={() => navigation.navigate("FromLocation")}
@@ -44,7 +46,7 @@ const MainLogic = () => {
         <View style={MainLogicStyles.toLocation}>
           <TextInput
             style={MainLogicStyles.input}
-            value={toLocation}
+            value={sLocation}
             onChangeText={setToLocation}
             placeholder="CIEC"
             onPress={() => navigation.navigate("ToLocation")}
@@ -71,7 +73,7 @@ const MainLogic = () => {
       <Pressable
         onPress={(res) => {
           demoSearch(res);
-          navigation.navigate("Search");
+          navigation.navigate("SearchResult");
         }}
         style={{
           backgroundColor: "#16ACDB",
@@ -101,7 +103,7 @@ const MainLogic = () => {
         }}
          onPress={() => navigation.navigate("CreateRides")}
         >
-        <Text style={{ color: "#0F93BD", textDecorationLine: "underline" }}>Click here to create rides</Text>
+        <Text style={{ color: "black", textDecorationLine: "underline" }}>Click here to create rides</Text>
       </Pressable>
     </View>
   );

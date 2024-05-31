@@ -5,7 +5,15 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import MainLogic from "./Main/MainLogic";
 import BottomNavBar from "./BottomNavBar/BottomNavBar";
 
-const HomePage = ({ navigation }) => {
+const HomePage = ({ route }) => {
+
+  // console.log(props, "user from Search From HomePage.js")
+  // console.log(props.navigation, "From HomePage.js")
+  console.log(route);
+  const { sLocation, eLocation } = route.params;
+  console.log(route.params);
+  console.log("user from Search From HomePage.js   --------------->",sLocation);
+
   return (
     <View style={HomePageStyles.container}>
       <Image
@@ -32,7 +40,7 @@ const HomePage = ({ navigation }) => {
           <Text style={HomePageStyles.subtitle}>to ?</Text>
         </View>
       </View>
-      <MainLogic />
+      <MainLogic sLocation={sLocation.display_place}/>
       <BottomNavBar />
     </View>
   );
