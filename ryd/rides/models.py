@@ -64,6 +64,7 @@ class RideRequest(models.Model):
         ('P', 'Pending'),
         ('A', 'Accepted'),
         ('R', 'Rejected'),
+        ('C', 'Cancelled'),
     )
 
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
@@ -84,6 +85,7 @@ class RideResponse(models.Model):
         ('P', 'Pending'),
         ('A', 'Accepted'),
         ('R', 'Rejected'),
+        ('C', 'Cancelled'),        
     )
 
     driver = models.ForeignKey(Employee, on_delete=models.CASCADE, related_name='driver_responses')

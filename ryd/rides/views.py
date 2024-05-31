@@ -15,7 +15,7 @@ import requests
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import SignUpSerializer, SignInSerializer, VehicleSerializer
+from .serializers import SignUpSerializer, SignInSerializer, VehicleSerializer, RideSerializer
 from .models import Vehicle, Employee, Ride, RideRequest, RideResponse
 from django.utils.dateparse import parse_datetime
 from rest_framework import status
@@ -25,8 +25,8 @@ from django.shortcuts import get_object_or_404
 class RideListView(APIView):
     def get(self, request):
         rides = Ride.objects.all()
-        ride_list = serializers.serialize('json', rides)
-        return JsonResponse(ride_list, safe=False)
+        serializer = RideSerializer(rides, many=True)
+        return Response(serializer.data)
 
     def post(self, request):
         new_ride = Ride.objects.create(
@@ -38,7 +38,7 @@ class RideListView(APIView):
             arrival_time=request.POST['arrival_time'],
             available_seats=request.POST['available_seats'],
         )
-        return JsonResponse({'ride_id': new_ride.id}, status=201)
+        return JsonResponse({'ride_id': new_ride.id}, status=status.HTTP_201_CREATED)
 
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -54,14 +54,14 @@ class RideDetailView(APIView):
             ride.passengers.add(request.user)
             ride.available_seats -= 1
             ride.save()
-            return JsonResponse({'message': 'Successfully joined the ride.'}, status=200)
+            return JsonResponse({'message': 'Successfully joined the ride.'}, status=status.HTTP_200_OK)
         elif 'leave' in request.POST:
             ride.passengers.remove(request.user)
             ride.available_seats += 1
             ride.save()
-            return JsonResponse({'message': 'Successfully left the ride.'}, status=200)
+            return JsonResponse({'message': 'Successfully left the ride.'}, status=status.HTTP_200_OK)
         else:
-            return JsonResponse({'error': 'Invalid action.'}, status=400)
+            return JsonResponse({'error': 'Invalid action.'}, status=status.HTTP_400_BAD_REQUEST)
 
 class CreateRideView(APIView):
     def post(self, request, format=None):
@@ -115,7 +115,7 @@ class LocationAutocompleteView(APIView):
     def get(self, request):
         query = request.GET.get('q')
         if not query:
-            return JsonResponse({'error': 'Missing required parameter.'}, status=400)
+            return JsonResponse({'error': 'Missing required parameter.'}, status=status.HTTP_400_BAD_REQUEST)
 
         response = requests.get('https://api.locationiq.com/v1/autocomplete', params={
             'key': 'pk.a81422c5e313a53d03e8254b6e5da929',
@@ -153,10 +153,10 @@ class VehicleView(View):
         number_of_seats = request.POST.get('number_of_seats')
         vehicle_type = request.POST.get('vehicle_type')
         employee_ids = request.POST.get('employee_ids')
-        print(employee_ids)
-        print( type(employee_ids))
         if Vehicle.objects.filter(vehicle_id=vehicle_id).exists():
-            return JsonResponse({"error": "A vehicle with this ID already exists."}, status=400)
+            return JsonResponse({"error": "A vehicle with this ID already exists."}, status=status.HTTP_400_BAD_REQUEST)
+        if vehicle_type == 'MC' and number_of_seats != '1':
+            return JsonResponse({'error': 'Motorcycles must have exactly 1 seat.'}, status=status.HTTP_400_BAD_REQUEST)
 
         employees = Employee.objects.get(employee_id=employee_ids)
         # print(Employee.objects.get(employee_id=employee_ids))
@@ -165,13 +165,13 @@ class VehicleView(View):
         # print(Employee.objects.filter(employee_id__in=employee_ids))
         # print("yes")
         # if len(employees) != len(employee_ids):
-        #     return JsonResponse({"error": "Some employees with provided IDs do not exist."}, status=400)
+        #     return JsonResponse({"error": "Some employees with provided IDs do not exist."}, status=status.HTTP_400_BAD_REQUEST)
 
         vehicle = Vehicle(vehicle_id=vehicle_id, model=model, number_of_seats=number_of_seats, vehicle_type=vehicle_type)
         vehicle.save()
         vehicle.employees.set([employees])
 
-        return JsonResponse({"message": "Vehicle created successfully."}, status=201)
+        return JsonResponse({"message": "Vehicle created successfully."}, status=status.HTTP_201_CREATED)
 
 
 class SignUpView(APIView):
@@ -226,7 +226,7 @@ class AvailableRidesView(APIView):
             total = response1.json()['routes'][0]['distance']
 
             # Get the route from the ride's origin to the user's destination, and from the user's destination to the ride's destination
-            response2 = requests.get(f"https://eu1.locationiq.com/v1/directions/driving/{ride.origin_longitude},{ride.origin_latitude};{user_destination_lng},{user_destination_lat}?key={key}")
+            response2 = requests.get(f"https://eu1.locationiq.com/v1/directions/driving/{ride.origin_longitude},{ride.origin_latitude};{user_origin_lng},{user_origin_lat}?key={key}")
             response3 = requests.get(f"https://eu1.locationiq.com/v1/directions/driving/{user_origin_lng},{user_origin_lat};{ride.destination_longitude},{ride.destination_latitude}?key={key}")
             sum_of_distances = response2.json()['routes'][0]['distance'] + response3.json()['routes'][0]['distance']
 
@@ -255,11 +255,13 @@ class CreateRideRequestView(View):
 
         employee = Employee.objects.get(id=employee_id)
         ride = Ride.objects.get(id=ride_id)
-
+        
+        if RideRequest.objects.filter(ride_id=ride).exists():
+            return JsonResponse({'error': 'A request for this ride request already exists.'}, status=status.HTTP_400_BAD_REQUEST)
         ride_request = RideRequest()
         ride_request.create_request(employee, ride)
 
-        return JsonResponse({'message': 'Ride request created successfully'}, status=201)
+        return JsonResponse({'message': 'Ride request created successfully'}, status=status.HTTP_201_CREATED)
 
 @method_decorator(csrf_exempt, name='dispatch')
 class CreateRideResponseView(View):
@@ -267,6 +269,10 @@ class CreateRideResponseView(View):
         driver_id = request.POST.get('driver_id')
         ride_request_id = request.POST.get('ride_request_id')
         ride_status = request.POST.get('status')
+        # try:
+        #     ride_request = RideRequest.objects.create(ride_request_id=ride_request_id)
+        # except IntegrityError:
+        #     return Response({"error": "A ride request with this ID already exists."}, status=400)
 
         try:
             ride_request = RideRequest.objects.get(id=ride_request_id)
@@ -309,4 +315,18 @@ class RideRequestResponseView(View):
             ]
         }
 
-        return JsonResponse(response_data, status=200)
+        return JsonResponse(response_data, status=status.HTTP_200_OK)
+    
+
+class CancelRideRequestView(APIView):
+    def post(self, request, ride_request_id):
+        try:
+            breakpoint()
+            ride_request = RideRequest.objects.get(id=ride_request_id)
+        except RideRequest.DoesNotExist:
+            return Response({'error': 'Ride request not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        ride_request.status = 'C'
+        ride_request.save()
+
+        return Response({'message': 'Ride request cancelled successfully'}, status=status.HTTP_200_OK)

@@ -3,6 +3,12 @@ from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import authenticate
 from rest_framework import serializers
 from .models import Vehicle, Employee
+from .models import Ride
+
+class RideSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ride
+        fields = '__all__'
 
 class VehicleSerializer(serializers.ModelSerializer):
     class Meta:
@@ -86,3 +92,8 @@ class SignInSerializer(ModelSerializer):
             raise serializers.ValidationError("Invalid username or password.")
 
         return data
+
+class RideSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ride
+        fields = '__all__'
