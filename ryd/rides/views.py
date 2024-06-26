@@ -226,8 +226,12 @@ class AvailableRidesView(APIView):
             total = response1.json()['routes'][0]['distance']
 
             # Get the route from the ride's origin to the user's destination, and from the user's destination to the ride's destination
-            response2 = requests.get(f"https://eu1.locationiq.com/v1/directions/driving/{ride.origin_longitude},{ride.origin_latitude};{user_origin_lng},{user_origin_lat}?key={key}")
-            response3 = requests.get(f"https://eu1.locationiq.com/v1/directions/driving/{user_origin_lng},{user_origin_lat};{ride.destination_longitude},{ride.destination_latitude}?key={key}")
+            if ride.destination_latitude == user_destination_lat:
+                response2 = requests.get(f"https://eu1.locationiq.com/v1/directions/driving/{ride.origin_longitude},{ride.origin_latitude};{user_origin_lng},{user_origin_lat}?key={key}")
+                response3 = requests.get(f"https://eu1.locationiq.com/v1/directions/driving/{user_origin_lng},{user_origin_lat};{ride.destination_longitude},{ride.destination_latitude}?key={key}")
+            else:
+                response2 = requests.get(f"https://eu1.locationiq.com/v1/directions/driving/{ride.destination_longitude},{ride.destination_latitude};{user_destination_lng},{user_destination_lat}?key={key}")
+                response3 = requests.get(f"https://eu1.locationiq.com/v1/directions/driving/{user_origin_lng},{user_origin_lat};{user_destination_lng},{user_destination_lat}?key={key}")
             sum_of_distances = response2.json()['routes'][0]['distance'] + response3.json()['routes'][0]['distance']
 
             # If the total distance and the sum of the two distances are approximately equal, add the ride to the list of available rides
